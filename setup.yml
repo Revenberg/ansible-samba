@@ -1,0 +1,21 @@
+---
+- name: Hello Ansible - https://gist.github.com/Lewiscowles1986/fecd4de0b45b2029c390
+  hosts: rpi
+  become_user: root
+  become: yes
+
+  tasks:    
+    - name: Update apt-get cache
+      apt: >
+        update_cache=yes
+        cache_valid_time=3600
+   
+    - name: Update all packages to the latest version
+      apt: > 
+        upgrade=yes
+
+    - name: Add repository "pi-bluetooth" package
+      apt:
+        name: pi-bluetooth
+
+
