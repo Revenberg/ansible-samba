@@ -13,9 +13,56 @@
     - name: Update all packages to the latest version
       apt: > 
         upgrade=yes
+ 
+    - name: Install list of packages
+      action: apt pkg={{item}} state=installed
+      with_items:
+        - samba
+        - samba-common-bin
 
-    - name: Add repository "pi-bluetooth" package
-      apt:
-        name: pi-bluetooth
+    - name: /etc/samba/smb.conf 1
+      lineinfile:
+        path: /etc/samba/smb.conf
+        line: 'workgroup = revenberg'
 
+    - name: /etc/samba/smb.conf 2
+      lineinfile:
+        path: /etc/samba/smb.conf
+        line: 'wins support = yes'
 
+    - name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
+      blockinfile:
+        path: /etc/samba/smb.conf 
+        block: |
+          [pihome]
+             comment= Pi Home
+             path=/home/pi
+             browseable=Yes
+             writeable=Yes
+             only guest=no
+             create mask=0777
+             directory mask=0777
+             public=yes
+          [usb0]
+             comment=usb0
+             path=/media/usb0
+             browseable=Yes
+             writeable=Yes
+             read only = no
+             only guest=no
+             create mask=0777
+             directory mask=0777
+             public=yes
+             force user = pi
+          [usb1]
+             comment=usb1
+             path=/media/usb1
+             browseable=Yes
+             writeable=Yes
+             read only = no
+             only guest=no
+             create mask=0777
+             directory mask=0777
+             public=yes
+             force user = pi
+      
